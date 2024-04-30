@@ -6,6 +6,7 @@ RUN set -ex \
     && apt-get install -y \
         zip unzip wget bzip2 curl git jq yq \
         libffi-dev libncurses5-dev libsqlite3-dev libssl-dev libicu-dev \
+        liblzma-dev libbz2-dev libreadline-dev \
         python-is-python3 python3-venv python3-pip \
         ca-certificates openssh-client build-essential docker.io gnupg2
 
