@@ -56,7 +56,7 @@ GIT_EMAIL_SET = $(shell git config --get user.email > /dev/null 2>&1; echo $$?)
 .PHONY: configure-git-hooks
 configure-git-hooks: configure-dependencies
 ifeq ($(PYTHON3_INSTALLED), 0)
-	pre-commit install
+	$(info Bypassing pre-commit install. This will be handled on a per-repo basis during CI, not at container build time.)
 else
 	$(error Missing python3, which is required for pre-commit. Install python3 and rerun.)
 endif
