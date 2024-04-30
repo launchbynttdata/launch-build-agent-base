@@ -18,13 +18,12 @@ RUN mkdir -p ~/.ssh \
 
 FROM core AS tools
 
-ARG LAUNCH_CLI_VERSION="0.5.0"
-
 RUN python -m venv env \
     && . env/bin/activate \
     && pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir --upgrade PyYAML setuptools awscli wheel \
-    && pip install --no-cache-dir "launch-cli==${LAUNCH_CLI_VERSION}"
+    && pip install --no-cache-dir "launch-cli" \
+    && launch --version
 
 # repo
 RUN curl https://storage.googleapis.com/git-repo-downloads/repo -o /usr/bin/repo \
