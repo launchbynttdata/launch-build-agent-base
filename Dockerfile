@@ -61,3 +61,14 @@ RUN git clone "${REPO_TOOL}" "${TOOLS_DIR}/git-repo" \
     && cd "${TOOLS_DIR}/git-repo" \
     && export PATH="$PATH:${TOOLS_DIR}/git-repo" \
     && chmod +x "repo"
+
+# Run make configure to install platform tools from .tool-versions
+COPY "./Makefile" "${TOOLS_DIR}/launch-build-agent/Makefile"
+ENV BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions" \
+    PATH="$PATH:${BUILD_ACTIONS_DIR}" \
+    JOB_NAME="${GIT_USERNAME}" \
+    JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}"
+RUN cd /usr/local/opt/launch-build-agent \
+    && make git-config \
+    && make configure \ 
+    && rm -rf $HOME/.gitconfig
