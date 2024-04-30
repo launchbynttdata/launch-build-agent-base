@@ -42,6 +42,9 @@ ARG GIT_USERNAME="nobody" \
 ENV TOOLS_DIR="/usr/local/opt" \
     IS_PIPELINE=true
 
+# Git config defaults to allow for basic testing -- override these when consuming this image.
+RUN git config --global user.name nobody && git config --global user.email nobody@nowhere.com
+
 # Create work directory
 RUN mkdir -p ${TOOLS_DIR}/launch-build-agent
 WORKDIR ${TOOLS_DIR}/launch-build-agent/
