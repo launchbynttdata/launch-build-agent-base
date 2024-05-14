@@ -1,6 +1,9 @@
 FROM ubuntu:24.04 AS core
 
 # Core utilities
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list
+
 RUN set -ex \
     && apt-get update \
     && apt-get install -y \
@@ -9,10 +12,7 @@ RUN set -ex \
         liblzma-dev libbz2-dev libreadline-dev \
         python-is-python3 python3-venv python3-pip \
         ca-certificates openssh-client build-essential docker.io gnupg2 \
-    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable --no-install-recommends \
+    && apt-get install -y google-chrome-stable --no-install-recommends --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up SSH for git and bitbucket
