@@ -29,6 +29,8 @@ RUN groupadd -r launch \
 
 USER launch
 
+WORKDIR /home/launch
+
 # Set up SSH for git and bitbucket
 RUN mkdir -p ~/.ssh \
     && touch ~/.ssh/known_hosts \
