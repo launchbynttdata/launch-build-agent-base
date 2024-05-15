@@ -21,6 +21,14 @@ RUN set -ex \
     && apt-get install -y google-chrome-stable --no-install-recommends --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
+# Create Launch User
+RUN groupadd -r launch \
+    && useradd -r -g launch -G audio,video launch \
+    && mkdir -p /home/launch \
+    && chown -R launch:launch /home/launch
+
+USER launch
+
 # Set up SSH for git and bitbucket
 RUN mkdir -p ~/.ssh \
     && touch ~/.ssh/known_hosts \
@@ -51,7 +59,7 @@ ARG GIT_USERNAME="nobody" \
     REPO_TOOL="https://github.com/launchbynttdata/git-repo.git"
 
 # Environment variables
-ENV TOOLS_DIR="/usr/local/opt" \
+ENV TOOLS_DIR="/home/launch/tools" \
     IS_PIPELINE=true
 
 # Create work directory
@@ -63,7 +71,7 @@ WORKDIR ${TOOLS_DIR}/launch-build-agent/
 COPY ./.tool-versions ${TOOLS_DIR}/launch-build-agent/.tool-versions
 COPY ./scripts/asdf-setup.sh ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
 RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
-ENV PATH="$PATH:/root/.asdf/bin:/root/.asdf/shims"
+ENV PATH="$PATH:/home/launch/.asdf/bin:/home/launch/.asdf/shims"
 
 # Install launch's modified git-repo
 RUN git clone "${REPO_TOOL}" "${TOOLS_DIR}/git-repo" \
