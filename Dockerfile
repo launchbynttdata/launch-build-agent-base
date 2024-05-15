@@ -91,7 +91,7 @@ ENV BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions"
     PATH="$PATH:${BUILD_ACTIONS_DIR}" \
     JOB_NAME="${GIT_USERNAME}" \
     JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}"
-RUN cd /usr/local/opt/launch-build-agent \
+RUN cd ${TOOLS_DIR}/launch-build-agent \
     && make git-config \
     && make configure \ 
     && rm -rf $HOME/.gitconfig
