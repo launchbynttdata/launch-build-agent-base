@@ -21,6 +21,24 @@ RUN set -ex \
     && apt-get install -y google-chrome-stable --no-install-recommends --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
+# Create home folder for Launch user
+RUN mkdir -p /home/launch
+
+# Put repo somewhere accessible
+RUN curl https://storage.googleapis.com/git-repo-downloads/repo -o /home/launch/repo \
+    && chmod a+rx /home/launch/repo
+
+# Create Launch User
+RUN groupadd -r launch \
+    && useradd -r -g launch -G audio,video launch \
+    && chown -R launch:launch /home/launch
+
+USER launch
+
+ENV PATH="$PATH:/home/launch"
+
+WORKDIR /home/launch
+
 # Set up SSH for git and bitbucket
 RUN mkdir -p ~/.ssh \
     && touch ~/.ssh/known_hosts \
@@ -37,10 +55,6 @@ RUN python -m venv env \
     && pip install --no-cache-dir "launch-cli" \
     && launch --version
 
-# repo
-RUN curl https://storage.googleapis.com/git-repo-downloads/repo -o /usr/bin/repo \
-    && chmod a+rx /usr/bin/repo
-
 # Cleanup
 RUN rm -fr /tmp/* /var/tmp/*
 
@@ -51,7 +65,7 @@ ARG GIT_USERNAME="nobody" \
     REPO_TOOL="https://github.com/launchbynttdata/git-repo.git"
 
 # Environment variables
-ENV TOOLS_DIR="/usr/local/opt" \
+ENV TOOLS_DIR="/home/launch/tools" \
     IS_PIPELINE=true
 
 # Create work directory
@@ -63,7 +77,7 @@ WORKDIR ${TOOLS_DIR}/launch-build-agent/
 COPY ./.tool-versions ${TOOLS_DIR}/launch-build-agent/.tool-versions
 COPY ./scripts/asdf-setup.sh ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
 RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
-ENV PATH="$PATH:/root/.asdf/bin:/root/.asdf/shims"
+ENV PATH="$PATH:/home/launch/.asdf/bin:/home/launch/.asdf/shims"
 
 # Install launch's modified git-repo
 RUN git clone "${REPO_TOOL}" "${TOOLS_DIR}/git-repo" \
@@ -77,7 +91,7 @@ ENV BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions"
     PATH="$PATH:${BUILD_ACTIONS_DIR}" \
     JOB_NAME="${GIT_USERNAME}" \
     JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}"
-RUN cd /usr/local/opt/launch-build-agent \
+RUN cd ${TOOLS_DIR}/launch-build-agent \
     && make git-config \
     && make configure \ 
     && rm -rf $HOME/.gitconfig
