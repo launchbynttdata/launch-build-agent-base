@@ -21,13 +21,21 @@ RUN set -ex \
     && apt-get install -y google-chrome-stable --no-install-recommends --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
+# Create home folder for Launch user
+RUN mkdir -p /home/launch
+
+# Put repo somewhere accessible
+RUN curl https://storage.googleapis.com/git-repo-downloads/repo -o /home/launch/repo \
+    && chmod a+rx /home/launch/repo
+
 # Create Launch User
 RUN groupadd -r launch \
     && useradd -r -g launch -G audio,video launch \
-    && mkdir -p /home/launch \
     && chown -R launch:launch /home/launch
 
 USER launch
+
+ENV PATH="$PATH:/home/launch"
 
 WORKDIR /home/launch
 
@@ -46,10 +54,6 @@ RUN python -m venv env \
     && pip install --no-cache-dir --upgrade PyYAML setuptools awscli wheel \
     && pip install --no-cache-dir "launch-cli" \
     && launch --version
-
-# repo
-RUN curl https://storage.googleapis.com/git-repo-downloads/repo -o /usr/bin/repo \
-    && chmod a+rx /usr/bin/repo
 
 # Cleanup
 RUN rm -fr /tmp/* /var/tmp/*
