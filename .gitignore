@@ -1,0 +1,4 @@
+.repo/
+components/
+
+.pre-commit-config.yaml
