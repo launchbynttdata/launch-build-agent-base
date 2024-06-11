@@ -8,6 +8,7 @@ RUN set -ex \
 # Source for headless Chrome installation
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list
+RUN rm /tmp/chrome_linux_signing_key.pub
 
 # Core utilities
 RUN set -ex \
@@ -93,7 +94,7 @@ ENV BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions"
     JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}"
 RUN cd ${TOOLS_DIR}/launch-build-agent \
     && make git-config \
-    && make configure \ 
+    && make configure \
     && rm -rf $HOME/.gitconfig
 
 # Git config defaults to allow for basic testing -- override these when consuming this image.
