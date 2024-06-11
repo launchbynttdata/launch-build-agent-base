@@ -1,7 +1,13 @@
 conftest 0.44.1
+dotnet 8.0.301 # https://github.com/emersonsoares/asdf-dotnet-core.git
 golang 1.20.8
 golang 1.21.7
 golangci-lint 1.53.3
+helm 3.14.3
+helm-diff 3.9.5
+kubectl 1.29.3
+kubelogin 0.1.1
+nodejs 20.9.0
 opa 0.53.1
 pre-commit 3.3.3
 python 3.11.5
