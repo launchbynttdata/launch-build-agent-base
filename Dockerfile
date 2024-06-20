@@ -76,6 +76,7 @@ WORKDIR ${TOOLS_DIR}/launch-build-agent/
 # Install asdf
 # TODO: migrate to mise.
 COPY ./.tool-versions ${TOOLS_DIR}/launch-build-agent/.tool-versions
+COPY ./.tool-versions /home/launch/.tool-versions
 COPY ./scripts/asdf-setup.sh ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
 RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
 ENV PATH="$PATH:/home/launch/.asdf/bin:/home/launch/.asdf/shims"
