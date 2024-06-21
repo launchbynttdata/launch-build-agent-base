@@ -19,8 +19,16 @@ RUN set -ex \
         liblzma-dev libbz2-dev libreadline-dev \
         python-is-python3 python3-venv python3-pip \
         ca-certificates openssh-client build-essential docker.io \
-    && apt-get install -y google-chrome-stable --no-install-recommends --fix-missing \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y google-chrome-stable --no-install-recommends --fix-missing 
+
+# Download and install AWS CLI version 2
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+&& unzip awscliv2.zip \
+&& ./aws/install \
+&& aws --version
+
+# Cleanup
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* awscliv2.zip ./aws
 
 # Create home folder for Launch user
 RUN mkdir -p /home/launch
@@ -49,12 +57,13 @@ RUN mkdir -p ~/.ssh \
 
 FROM core AS tools
 
-RUN python -m venv env \
-    && . env/bin/activate \
-    && pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir --upgrade PyYAML setuptools awscli wheel \
-    && pip install --no-cache-dir "launch-cli" \
-    && launch --version
+ENV PATH="$PATH:/home/launch"
+
+RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
+    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
+    && pip install --no-cache-dir --break-system-packages "launch-cli"
+
+ENV PATH="$PATH:/home/launch/.local/bin"
 
 # Cleanup
 RUN rm -fr /tmp/* /var/tmp/*
@@ -97,6 +106,13 @@ RUN cd ${TOOLS_DIR}/launch-build-agent \
     && make git-config \
     && make configure \
     && rm -rf $HOME/.gitconfig
+
+# Copy the launch tools/packages to the root user's home directory
+USER root
+RUN cp -r /home/launch/* /root/ && \
+    cp -r /home/launch/.[!.]* /root/
+
+USER launch
 
 # Git config defaults to allow for basic testing -- override these when consuming this image.
 RUN git config --global user.name nobody && git config --global user.email nobody@nowhere.com
