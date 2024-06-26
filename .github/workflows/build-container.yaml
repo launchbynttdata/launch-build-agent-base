@@ -23,7 +23,7 @@ jobs:
       - name: Build image
         run: docker buildx build -t ${{ github.event.repository.name }} --file ./Dockerfile . --platform linux/amd64 --load
       - name: Test image
-        run: docker run -i ${{ github.event.repository.name }}
+        run: echo "git clone https://github.com/launchbynttdata/tf-azurerm-module_primitive-resource_group.git; cd tf-azurerm-module_primitive-resource_group; make configure" | docker run ${{ github.event.repository.name }} /usr/bin/bash
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push image
