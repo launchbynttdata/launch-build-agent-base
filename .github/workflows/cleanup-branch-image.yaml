@@ -1,0 +1,32 @@
+name: Cleanup Branch Image
+on: delete
+
+permissions:
+  packages: write
+
+jobs:
+  delete:
+    outputs:
+      output1: ${{ steps.DetermineTagName.outputs.container_tag }}
+    if: github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      - id: determine_tag_name
+        name: Determine Tag Name
+        run: |
+          echo "Clean up for branch ${{ github.event.ref }}"
+          container_tag=$(echo "${{ github.event.ref }}" | sed -e 's,refs/[head|tag]*s/,,g' | sed -e 's,/,-,g' | sed -e 's/!/-breaking/g' ) # This strips the git ref prefix from the version and replaces any remaining / characters with a -.
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && container_tag=$(echo $container_tag | sed -e 's/^v//') # This strips the "v" prefix from the tag name.
+          echo "Will remove container tagged with '$container_tag'"
+          echo "container_tag=$container_tag" >> $GITHUB_OUTPUT
+      - name: Delete Tag
+        uses: chipkent/action-cleanup-package@v1.0.1
+        with:
+          package-name: ${{ github.event.repository.name }}
+          tag: ${{ steps.determine_tag_name.outputs.container_tag }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cleanup Untagged
+        uses: dylanratcliffe/delete-untagged-containers@v1.2.3
+        with:
+          package_name: ${{ github.event.repository.name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
