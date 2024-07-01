@@ -64,14 +64,10 @@ ENV PATH="$PATH:/home/launch"
 #     && pip install --no-cache-dir --break-system-packages "launch-cli"
 
 RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
-    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel
+    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
+    && pip install git+https://github.com/launchbynttdata/launch-cli.git@feature/generate-githubapp-token
 
 ENV PATH="$PATH:/home/launch/.local/bin"
-
-
-# Clone the repository and enter its directory
-RUN git clone -b feature/generate-githubapp-token https://github.com/launchbynttdata/launch-cli.git /home/launch/launch-cli
-
 
 # Cleanup
 RUN rm -fr /tmp/* /var/tmp/*
@@ -119,13 +115,6 @@ RUN cd ${TOOLS_DIR}/launch-build-agent \
 USER root
 RUN cp -r /home/launch/* /root/ && \
     cp -r /home/launch/.[!.]* /root/
-
-RUN cd /root/launch-cli \
-# Create a new virtual environment and activate it
-&& python3 -m venv .venv \
-&& . .venv/bin/activate \
-# Install the project in editable mode with dev dependencies
-&& python3 -m pip install -e '.[dev]'
 
 USER launch
 
