@@ -65,7 +65,7 @@ ENV PATH="$PATH:/home/launch"
 
 RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
     && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
-    && pip install git+https://github.com/launchbynttdata/launch-cli.git@feature/generate-githubapp-token
+    && pip install --no-cache-dir --break-system-packages git+https://github.com/launchbynttdata/launch-cli.git@feature/generate-githubapp-token
 
 ENV PATH="$PATH:/home/launch/.local/bin"
 
