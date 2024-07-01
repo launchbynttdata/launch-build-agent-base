@@ -1,19 +1,21 @@
 conftest 0.44.1
-dotnet 8.0.301 # https://github.com/emersonsoares/asdf-dotnet-core.git
-golang 1.20.8
-golang 1.21.7
-golangci-lint 1.53.3
-helm 3.14.3
+dotnet 8.0.302 # https://github.com/emersonsoares/asdf-dotnet-core.git
+golang 1.20.14
+golang 1.21.11
+golang 1.22.4
+golangci-lint 1.59.1
+helm 3.15.2
 helm-diff 3.9.5
 kubectl 1.29.3
 kubelogin 0.1.1
-nodejs 20.9.0
+nodejs 18.20.3
+nodejs 20.15.0
 opa 0.53.1
 pre-commit 3.3.3
-python 3.11.5
+python 3.11.9
 regula 3.2.1 # https://github.com/launchbynttdata/asdf-regula
 terraform 1.5.5
 terraform-docs 0.16.0
 terragrunt 0.39.2
 terragrunt 0.51.6
-tflint 0.48.0
+tflint 0.51.2
