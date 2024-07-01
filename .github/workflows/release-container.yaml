@@ -1,9 +1,11 @@
-name: Build Container
+name: Release Container
 
 on:
-  push:
-    branches-ignore:
-      - "main"
+  workflow_run:
+    workflows:
+        - Increment Tagged Version
+    types:
+      - completed
 
 permissions:
   contents: read
@@ -26,16 +28,19 @@ jobs:
         run: echo "git clone https://github.com/launchbynttdata/tf-azurerm-module_primitive-resource_group.git; cd tf-azurerm-module_primitive-resource_group; make configure" | docker run ${{ github.event.repository.name }} /usr/bin/bash
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Push image
+      - name: Push image tags
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]') # This changes all uppercase characters to lowercase.
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,refs/[head|tag]*s/,,g' | sed -e 's,/,-,g' | sed -e 's/!/-breaking/g' ) # This strips the git ref prefix from the version and replaces any remaining / characters with a -.
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//') # This strips the "v" prefix from the tag name.
+          SEMVER_TAG=$(git tag --points-at HEAD | tail -n 1)
+          LATEST_TAG=latest
           echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag ${{ github.event.repository.name }} $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+          echo SEMVER_TAG=$SEMVER_TAG
+          echo LATEST_TAG=$LATEST_TAG
+          docker tag ${{ github.event.repository.name }} $IMAGE_ID:$SEMVER_TAG
+          docker push $IMAGE_ID:$SEMVER_TAG
+          docker tag ${{ github.event.repository.name }} $IMAGE_ID:$LATEST_TAG
+          docker push $IMAGE_ID:$LATEST_TAG
       - name: Cleanup Untagged
         uses: dylanratcliffe/delete-untagged-containers@v1.2.3
         with:
