@@ -2,7 +2,7 @@ on:
   pull_request:
     branches: [ "main" ]
 
-name: validate-branch-name
+name: Validate Branch Name
 
 permissions:
   contents: read

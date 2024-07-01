@@ -1,11 +1,11 @@
+name: Increment Tagged Version
+
 on:
   pull_request:
     types:
       - closed
     branches:
       - main
-
-name: increment-tagged-version
 
 permissions:
   contents: write
