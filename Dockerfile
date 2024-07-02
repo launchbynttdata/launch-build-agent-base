@@ -59,9 +59,13 @@ FROM core AS tools
 
 ENV PATH="$PATH:/home/launch"
 
+# RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
+#     && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
+#     && pip install --no-cache-dir --break-system-packages "launch-cli"
+
 RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
     && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
-    && pip install --no-cache-dir --break-system-packages "launch-cli"
+    && pip install --no-cache-dir --break-system-packages git+https://github.com/launchbynttdata/launch-cli.git@feature/generate-githubapp-token
 
 ENV PATH="$PATH:/home/launch/.local/bin"
 
