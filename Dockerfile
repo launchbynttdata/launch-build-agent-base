@@ -57,8 +57,13 @@ FROM core AS tools
 ENV PATH="$PATH:/home/launch"
 
 RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
-    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
-    && pip install --no-cache-dir --break-system-packages "launch-cli"
+    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel
+    # && pip install --no-cache-dir --break-system-packages "launch-cli"
+
+RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/reworking-git-token" \
+    && cd launch-cli \
+    && python -m pip install -e '.[dev]'
+
 
 ENV PATH="$PATH:/home/launch/.local/bin"
 
