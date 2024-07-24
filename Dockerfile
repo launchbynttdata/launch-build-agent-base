@@ -62,7 +62,7 @@ RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
 
 RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/reworking-git-token" \
     && cd launch-cli \
-    && python -m pip install -e '.[dev]'
+    && python -m pip install -e '.[dev]' --break-system-packages
 
 
 ENV PATH="$PATH:/home/launch/.local/bin"
