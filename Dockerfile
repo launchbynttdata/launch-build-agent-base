@@ -15,10 +15,14 @@ RUN set -ex \
         python-is-python3 python3-venv python3-pip \
         ca-certificates openssh-client build-essential docker.io
 
-# Download and install AWS CLI version 2
+# Install AWS CLI version 2 for the platform
 ARG TARGETARCH
 COPY ./scripts/install-awscliv2-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh
 RUN ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh
+
+# Install Google Chrome for the platform. Needed for Angular tests.
+COPY ./scripts/install-chrome-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh
+RUN ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* awscliv2.zip ./aws
