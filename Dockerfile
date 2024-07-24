@@ -18,14 +18,12 @@ RUN set -ex \
         libffi-dev libncurses5-dev libsqlite3-dev libssl-dev libicu-dev \
         liblzma-dev libbz2-dev libreadline-dev \
         python-is-python3 python3-venv python3-pip \
-        ca-certificates openssh-client build-essential docker.io \
-    && apt-get install -y google-chrome-stable --no-install-recommends --fix-missing 
+        ca-certificates openssh-client build-essential docker.io
 
 # Download and install AWS CLI version 2
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-&& unzip awscliv2.zip \
-&& ./aws/install \
-&& aws --version
+ARG TARGETARCH
+COPY ./scripts/install-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-${TARGETARCH}.sh
+RUN ${TOOLS_DIR}/launch-build-agent/install-${TARGETARCH}.sh
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* awscliv2.zip ./aws
