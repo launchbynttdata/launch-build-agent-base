@@ -5,11 +5,6 @@ RUN set -ex \
     && apt-get install -y \
         wget gnupg2
 
-# Source for headless Chrome installation
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list
-RUN rm -f /tmp/chrome_linux_signing_key.pub
-
 # Core utilities
 RUN set -ex \
     && apt-get update \
@@ -22,8 +17,8 @@ RUN set -ex \
 
 # Download and install AWS CLI version 2
 ARG TARGETARCH
-COPY ./scripts/install-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-${TARGETARCH}.sh
-RUN ${TOOLS_DIR}/launch-build-agent/install-${TARGETARCH}.sh
+COPY ./scripts/install-awscliv2-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh
+RUN ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh
 
 # Cleanup
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* awscliv2.zip ./aws
