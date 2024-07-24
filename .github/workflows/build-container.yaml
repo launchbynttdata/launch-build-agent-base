@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-tags: true
       - name: Build image
-        run: docker buildx create --name docker-container --driver docker-container ; docker buildx --builder docker-container --output=type=oci --platform linux/amd64,linux/arm64 -t ${{ github.event.repository.name }} . | docker load
+        run: docker buildx create --name docker-container --driver docker-container ; docker buildx --builder docker-container build --output=type=oci --platform linux/amd64,linux/arm64 -t ${{ github.event.repository.name }} . | docker load
       - name: Test image
         run: echo "git clone https://github.com/launchbynttdata/tf-azurerm-module_primitive-resource_group.git; cd tf-azurerm-module_primitive-resource_group; make configure" | docker run ${{ github.event.repository.name }} /usr/bin/bash
       - name: Log in to registry
