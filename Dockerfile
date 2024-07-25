@@ -60,6 +60,7 @@ RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
     && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel
     # && pip install --no-cache-dir --break-system-packages "launch-cli"
 
+# DELETE ME - launch-cli dev branch
 RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/reworking-git-token" \
     && cd launch-cli \
     && python -m pip install -e '.[dev]' --break-system-packages
