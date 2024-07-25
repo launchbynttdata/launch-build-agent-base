@@ -18,7 +18,7 @@ LCAF_ENV_FILE = .lcafenv
 # Source repository for repo manifests
 REPO_MANIFESTS_URL ?= https://github.com/launchbynttdata/launch-common-automation-framework.git
 # Branch of source repository for repo manifests. Other tags not currently supported.
-REPO_BRANCH ?= patch/pipeline-fixes
+REPO_BRANCH ?= patch/version-bump-pipelines
 # Path to seed manifest in repository referenced in REPO_MANIFESTS_URL
 REPO_MANIFEST ?= manifests/platform/seed/manifest.xml
 
