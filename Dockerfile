@@ -91,7 +91,7 @@ RUN cp -r /home/launch/* /root/ && \
 USER launch
 
 # Git config defaults to allow for basic testing -- override these when consuming this image.
-RUN git config --global user.name nobody && git config --global user.email nobody@nowhere.com \
+RUN git config --global user.name nobody && git config --global user.email nobody@nttdata.com \
     && rm -fr /tmp/* /var/tmp/* \
     && rm -rf /usr/share/dotnet \
     && rm -rf /opt/ghc \
