@@ -75,9 +75,6 @@ RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/
 
 ENV PATH="$PATH:/home/launch/.local/bin"
 
-# Cleanup
-RUN rm -fr /tmp/* /var/tmp/*
-
 FROM tools AS lcaf
 
 ARG GIT_USERNAME="nobody" \
@@ -126,3 +123,10 @@ USER launch
 
 # Git config defaults to allow for basic testing -- override these when consuming this image.
 RUN git config --global user.name nobody && git config --global user.email nobody@nowhere.com
+
+# Cleanup
+RUN rm -fr /tmp/* /var/tmp/* \
+    && rm -rf /usr/share/dotnet \
+    && rm -rf /opt/ghc \
+    && rm -rf "/usr/local/share/boost" \
+    && rm -rf "$AGENT_TOOLSDIRECTORY"
