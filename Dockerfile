@@ -16,8 +16,8 @@ RUN set -ex \
         ca-certificates openssh-client build-essential
 
 # Install Docker
-COPY ./scripts/install_docker.sh ${TOOLS_DIR}/launch-build-agent/install_docker.sh
-RUN ${TOOLS_DIR}/launch-build-agent/install_docker.sh
+COPY ./scripts/install-docker.sh ${TOOLS_DIR}/launch-build-agent/install-docker.sh
+RUN ${TOOLS_DIR}/launch-build-agent/install-docker.sh
 
 # Install AWS CLI version 2 for the platform
 ARG TARGETARCH
