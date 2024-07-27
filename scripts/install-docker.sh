@@ -1,5 +1,7 @@
 #!/bin/bash
 
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do apt-get remove $pkg; done
+
 # Instructions from: https://docs.docker.com/engine/install/ubuntu/
 # Add Docker's official GPG key:
 apt-get update

@@ -13,7 +13,10 @@ RUN set -ex \
         libffi-dev libncurses5-dev libsqlite3-dev libssl-dev libicu-dev \
         liblzma-dev libbz2-dev libreadline-dev \
         python-is-python3 python3-venv python3-pip \
-        ca-certificates openssh-client build-essential
+        ca-certificates openssh-client build-essential \
+    && apt-get autoremove -y \
+    && apt-get purge -y --auto-remove \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Docker
 COPY ./scripts/install-docker.sh ${TOOLS_DIR}/launch-build-agent/install-docker.sh
@@ -73,15 +76,7 @@ RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/
 ENV PATH="$PATH:/home/launch/.local/bin"
 
 # Cleanup
-# https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
-RUN rm -fr /tmp/* /var/tmp/* \
-    && apt-get autoremove -y \
-    && apt-get purge -y --auto-remove \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /usr/share/dotnet \
-    && rm -rf /opt/ghc \
-    && rm -rf "/usr/local/share/boost" \
-    && rm -rf "$AGENT_TOOLSDIRECTORY"
+RUN rm -fr /tmp/* /var/tmp/*
 
 FROM tools AS lcaf
 
