@@ -69,7 +69,19 @@ RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/
     && cd launch-cli \
     && python -m pip install -e '.[dev]' --break-system-packages
 
+
 ENV PATH="$PATH:/home/launch/.local/bin"
+
+# Cleanup
+# https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+RUN rm -fr /tmp/* /var/tmp/* \
+    && apt-get autoremove -y \
+    && apt-get purge -y --auto-remove \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /usr/share/dotnet \
+    && rm -rf /opt/ghc \
+    && rm -rf "/usr/local/share/boost" \
+    && rm -rf "$AGENT_TOOLSDIRECTORY"
 
 FROM tools AS lcaf
 
@@ -119,14 +131,3 @@ USER launch
 
 # Git config defaults to allow for basic testing -- override these when consuming this image.
 RUN git config --global user.name nobody && git config --global user.email nobody@nowhere.com
-
-# Cleanup
-# https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
-RUN sudo rm -fr /tmp/* /var/tmp/* \
-    && sudo apt-get autoremove -y \
-    && sudo apt-get purge -y --auto-remove \
-    && sudo rm -rf /var/lib/apt/lists/* \
-    && sudo rm -rf /usr/share/dotnet \
-    && sudo rm -rf /opt/ghc \
-    && sudo rm -rf "/usr/local/share/boost" \
-    && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
