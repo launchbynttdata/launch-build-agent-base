@@ -58,10 +58,8 @@ ARG GIT_USERNAME="nobody" \
 ENV TOOLS_DIR="/home/launch/tools" \
     IS_PIPELINE=true \
     BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions" \
-    PATH="$PATH:${BUILD_ACTIONS_DIR}" \
     JOB_NAME="${GIT_USERNAME}" \
-    JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}" \
-    PATH="$PATH:/home/launch:/home/launch/.asdf/bin:/home/launch/.asdf/shims:/home/launch/.local/bin"
+    JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}"
 
 # Create work directory
 RUN mkdir -p ${TOOLS_DIR}/launch-build-agent
@@ -76,7 +74,7 @@ COPY "./Makefile" "${TOOLS_DIR}/launch-build-agent/Makefile"
 RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh \
     && git clone "${REPO_TOOL}" "${TOOLS_DIR}/git-repo" \
     && cd "${TOOLS_DIR}/git-repo" \
-    && export PATH="$PATH:${TOOLS_DIR}/git-repo" \
+    && export PATH="$PATH:/home/launch:/home/launch/.asdf/bin:/home/launch/.asdf/shims:/home/launch/.local/bin:${TOOLS_DIR}/git-repo:${BUILD_ACTIONS_DIR}" \
     && chmod +x "repo" \
     && cd ${TOOLS_DIR}/launch-build-agent \
     && make git-config \
