@@ -13,7 +13,11 @@ RUN set -ex \
         libffi-dev libncurses5-dev libsqlite3-dev libssl-dev libicu-dev \
         liblzma-dev libbz2-dev libreadline-dev \
         python-is-python3 python3-venv python3-pip \
-        ca-certificates openssh-client build-essential docker.io
+        ca-certificates openssh-client build-essential
+
+# Install Docker
+COPY ./scripts/install_docker.sh ${TOOLS_DIR}/launch-build-agent/install_docker.sh
+RUN ${TOOLS_DIR}/launch-build-agent/install_docker.sh
 
 # Install AWS CLI version 2 for the platform
 ARG TARGETARCH
