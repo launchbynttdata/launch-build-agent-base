@@ -65,7 +65,7 @@ RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
     # && pip install --no-cache-dir --break-system-packages "launch-cli"
 
 # DELETE ME - launch-cli dev branch
-RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/reworking-git-token" \
+RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/reworking-git-token" --single-branch \
     && cd launch-cli \
     && python -m pip install -e '.[dev]' --break-system-packages
 
@@ -73,7 +73,15 @@ RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/
 ENV PATH="$PATH:/home/launch/.local/bin"
 
 # Cleanup
-RUN rm -fr /tmp/* /var/tmp/*
+# https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+RUN rm -fr /tmp/* /var/tmp/* \
+    && apt-get autoremove -y \
+    && apt-get purge -y --auto-remove \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /usr/share/dotnet \
+    && rm -rf /opt/ghc \
+    && rm -rf "/usr/local/share/boost" \
+    && rm -rf "$AGENT_TOOLSDIRECTORY"
 
 FROM tools AS lcaf
 
