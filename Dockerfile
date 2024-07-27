@@ -85,14 +85,14 @@ RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh \
 
 # Copy the launch tools/packages to the root user's home directory
 USER root
-RUN cp -r /home/launch/* /root/ && \
-    cp -r /home/launch/.[!.]* /root/
+RUN cp -r /home/launch/* /root/ \
+    && cp -r /home/launch/.[!.]* /root/ \
+    && git config --system user.name nobody && git config --system user.email nobody@nttdata.com
 
 USER launch
 
 # Git config defaults to allow for basic testing -- override these when consuming this image.
-RUN git config --system user.name nobody && git config --system user.email nobody@nttdata.com \
-    && rm -fr /tmp/* /var/tmp/* \
+RUN rm -fr /tmp/* /var/tmp/* \
     && rm -rf /usr/share/dotnet \
     && rm -rf /opt/ghc \
     && rm -rf "/usr/local/share/boost" \
