@@ -18,14 +18,14 @@ COPY ./scripts/install-chrome-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/i
 RUN ${TOOLS_DIR}/launch-build-agent/install-docker.sh \
     && ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh \
     && ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* awscliv2.zip ./aws \
     && apt-get autoremove -y \
     && apt-get purge -y --auto-remove \
     && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* awscliv2.zip ./aws \
     && mkdir -p /home/launch \
-    && curl https://storage.googleapis.com/git-repo-downloads/repo -o /home/launch/repo
-RUN chmod a+rx /home/launch/repo \
-    77 groupadd -r launch \
+    && curl https://storage.googleapis.com/git-repo-downloads/repo -o /home/launch/repo \
+    && chmod a+rx /home/launch/repo \
+    && groupadd -r launch \
     && useradd -r -g launch -G audio,video launch \
     && chown -R launch:launch /home/launch
 
@@ -43,11 +43,9 @@ RUN mkdir -p ~/.ssh \
 FROM core AS tools
 
 RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
-    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel
+    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
     # && pip install --no-cache-dir --break-system-packages "launch-cli"
-
-# DELETE ME - launch-cli dev branch
-RUN git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/reworking-git-token" --single-branch \
+    && git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/reworking-git-token" --single-branch \
     && cd launch-cli \
     && python -m pip install -e '.[dev]' --break-system-packages
 
