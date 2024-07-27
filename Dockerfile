@@ -74,12 +74,13 @@ COPY "./Makefile" "${TOOLS_DIR}/launch-build-agent/Makefile"
 RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh \
     && git clone "${REPO_TOOL}" "${TOOLS_DIR}/git-repo" \
     && cd "${TOOLS_DIR}/git-repo" \
-    && export PATH="$PATH:/home/launch:/home/launch/.asdf/bin:/home/launch/.asdf/shims:/home/launch/.local/bin:${TOOLS_DIR}/git-repo:${BUILD_ACTIONS_DIR}" \
     && chmod +x "repo" \
     && cd ${TOOLS_DIR}/launch-build-agent \
     && make git-config \
     && make configure \
     && rm -rf $HOME/.gitconfig
+
+ENV PATH="$PATH:/home/launch:/home/launch/.asdf/bin:/home/launch/.asdf/shims:/home/launch/.local/bin:${TOOLS_DIR}/git-repo:${BUILD_ACTIONS_DIR}"
 
 # Copy the launch tools/packages to the root user's home directory
 USER root
