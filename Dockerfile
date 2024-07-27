@@ -23,8 +23,8 @@ RUN ${TOOLS_DIR}/launch-build-agent/install-docker.sh \
     && apt-get purge -y --auto-remove \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /home/launch \
-    && curl https://storage.googleapis.com/git-repo-downloads/repo -o /home/launch/repo \
-    && chmod a+rx /home/launch/repo \
+    && curl https://storage.googleapis.com/git-repo-downloads/repo -o /home/launch/repo
+RUN chmod a+rx /home/launch/repo \
     77 groupadd -r launch \
     && useradd -r -g launch -G audio,video launch \
     && chown -R launch:launch /home/launch
@@ -75,11 +75,6 @@ COPY ./.tool-versions ${TOOLS_DIR}/launch-build-agent/.tool-versions
 COPY ./.tool-versions /home/launch/.tool-versions
 COPY ./scripts/asdf-setup.sh ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
 COPY "./Makefile" "${TOOLS_DIR}/launch-build-agent/Makefile"
-ENV BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions" \
-    PATH="$PATH:${BUILD_ACTIONS_DIR}" \
-    JOB_NAME="${GIT_USERNAME}" \
-    JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}" \
-    PATH="$PATH:/home/launch:/home/launch/.asdf/bin:/home/launch/.asdf/shims:/home/launch/.local/bin"
 
 RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh \
     && git clone "${REPO_TOOL}" "${TOOLS_DIR}/git-repo" \
