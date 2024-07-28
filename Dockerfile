@@ -72,15 +72,18 @@ COPY ./.tool-versions /home/launch/.tool-versions
 COPY ./scripts/asdf-setup.sh ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
 COPY "./Makefile" "${TOOLS_DIR}/launch-build-agent/Makefile"
 
+
 RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh \
     && git clone "${REPO_TOOL}" "${TOOLS_DIR}/git-repo" \
     && cd "${TOOLS_DIR}/git-repo" \
     && chmod +x "repo" \
     && cd ${TOOLS_DIR}/launch-build-agent \
+    && export PATH="$PATH:/home/launch/.asdf/bin:/home/launch/.asdf/shims" \
     && make git-config \
     && make configure \
     && rm -rf $HOME/.gitconfig
 
+# Set the PATH environment variable
 ENV PATH="$PATH:/home/launch:/home/launch/.asdf/bin:/home/launch/.asdf/shims:/home/launch/.local/bin:${TOOLS_DIR}/git-repo:${BUILD_ACTIONS_DIR}"
 
 # Copy the launch tools/packages to the root user's home directory
@@ -91,7 +94,7 @@ RUN cp -r /home/launch/* /root/ \
 
 USER launch
 
-# Git config defaults to allow for basic testing -- override these when consuming this image.
+# Clean up
 RUN rm -fr /tmp/* /var/tmp/* \
     && rm -rf /usr/share/dotnet \
     && rm -rf /opt/ghc \
