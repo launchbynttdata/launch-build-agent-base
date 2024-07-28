@@ -10,18 +10,8 @@ RUN set -ex \
         python-is-python3 python3-venv python3-pip \
         ca-certificates openssh-client build-essential
 
-ARG GIT_USERNAME="nobody" \
-    GIT_EMAIL_DOMAIN="nttdata.com" \
-    REPO_TOOL="https://github.com/launchbynttdata/git-repo.git"
-
-# Environment variables
-ENV TOOLS_DIR="/home/launch/tools" \
-    IS_PIPELINE=true \
-    BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions" \
-    JOB_NAME="${GIT_USERNAME}" \
-    JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}"
-
 # Install Docker
+ENV TOOLS_DIR="/home/launch/tools"
 COPY ./scripts/install-docker.sh ${TOOLS_DIR}/launch-build-agent/install-docker.sh
 COPY ./scripts/install-awscliv2-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh
 COPY ./scripts/install-chrome-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh
@@ -60,6 +50,17 @@ RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
     && python -m pip install -e '.[dev]' --break-system-packages
 
 FROM tools AS lcaf
+
+ARG GIT_USERNAME="nobody" \
+    GIT_EMAIL_DOMAIN="nttdata.com" \
+    REPO_TOOL="https://github.com/launchbynttdata/git-repo.git"
+
+# Environment variables
+ENV TOOLS_DIR="/home/launch/tools" \
+    IS_PIPELINE=true \
+    BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions" \
+    JOB_NAME="${GIT_USERNAME}" \
+    JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}"
 
 # Create work directory
 RUN mkdir -p ${TOOLS_DIR}/launch-build-agent
