@@ -1,6 +1,7 @@
 FROM ubuntu:24.04 AS core
 ARG TARGETARCH
 
+# Install necessary packages
 RUN set -ex \
     && apt-get update \
     && apt-get install -y \
@@ -10,12 +11,13 @@ RUN set -ex \
         python-is-python3 python3-venv python3-pip \
         ca-certificates openssh-client build-essential
 
-# Install Docker
+# Copy install scripts to the container
 ENV TOOLS_DIR="/home/launch/tools"
 COPY ./scripts/install-docker.sh ${TOOLS_DIR}/launch-build-agent/install-docker.sh
 COPY ./scripts/install-awscliv2-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh
 COPY ./scripts/install-chrome-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh
 
+# Install Docker AWS CLI, Chrome, and set up the launch user
 RUN ${TOOLS_DIR}/launch-build-agent/install-docker.sh \
     && ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh \
     && ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh \
@@ -60,31 +62,28 @@ ENV TOOLS_DIR="/home/launch/tools" \
     IS_PIPELINE=true \
     BUILD_ACTIONS_DIR="${TOOLS_DIR}/launch-build-agent/components/build-actions" \
     JOB_NAME="${GIT_USERNAME}" \
-    JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}"
+    JOB_EMAIL="${GIT_USERNAME}@${GIT_EMAIL_DOMAIN}" \
+    PATH="$PATH:/home/launch:/home/launch/.asdf/bin:/home/launch/.asdf/shims:/home/launch/.local/bin:${TOOLS_DIR}/git-repo:${BUILD_ACTIONS_DIR}"
 
 # Create work directory
 RUN mkdir -p ${TOOLS_DIR}/launch-build-agent
 WORKDIR ${TOOLS_DIR}/launch-build-agent/
 
-# TODO: migrate to mise.
+# Copy the necessary files to the container
 COPY ./.tool-versions ${TOOLS_DIR}/launch-build-agent/.tool-versions
 COPY ./.tool-versions /home/launch/.tool-versions
 COPY ./scripts/asdf-setup.sh ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh
 COPY "./Makefile" "${TOOLS_DIR}/launch-build-agent/Makefile"
 
-
+# Install asdf, git-repo, and run make commands
 RUN ${TOOLS_DIR}/launch-build-agent/asdf-setup.sh \
     && git clone "${REPO_TOOL}" "${TOOLS_DIR}/git-repo" \
     && cd "${TOOLS_DIR}/git-repo" \
     && chmod +x "repo" \
     && cd ${TOOLS_DIR}/launch-build-agent \
-    && export PATH="$PATH:/home/launch/.asdf/bin:/home/launch/.asdf/shims" \
     && make git-config \
     && make configure \
     && rm -rf $HOME/.gitconfig
-
-# Set the PATH environment variable
-ENV PATH="$PATH:/home/launch:/home/launch/.asdf/bin:/home/launch/.asdf/shims:/home/launch/.local/bin:${TOOLS_DIR}/git-repo:${BUILD_ACTIONS_DIR}"
 
 # Copy the launch tools/packages to the root user's home directory
 USER root
