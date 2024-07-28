@@ -38,6 +38,8 @@ jobs:
         run: |
           docker tag ${{ github.event.repository.name }} $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+      - name: Clean for next platform build
+        run: docker system prune -f
       - name: Build linux/arm64 image
         run: docker buildx build -t ${{ github.event.repository.name }} --file ./Dockerfile . --platform linux/arm64 --load # Ticket 133 to enable multi-architecture builds (linux/arm64)
       - name: Test image
