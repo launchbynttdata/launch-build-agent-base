@@ -23,8 +23,8 @@ jobs:
       - name: Set Docker image vars.
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]') # This changes all uppercase characters to lowercase.
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,refs/[head|tag]*s/,,g' | sed -e 's,/,-,g' | sed -e 's/!/-breaking/g' ) # This strips the git ref prefix from the version and replaces any remaining / characters with a -.
+          export IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]') # This changes all uppercase characters to lowercase.
+          export VERSION=$(echo "${{ github.ref }}" | sed -e 's,refs/[head|tag]*s/,,g' | sed -e 's,/,-,g' | sed -e 's/!/-breaking/g' ) # This strips the git ref prefix from the version and replaces any remaining / characters with a -.
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//') # This strips the "v" prefix from the tag name.
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
