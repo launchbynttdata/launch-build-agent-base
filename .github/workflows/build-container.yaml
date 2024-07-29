@@ -31,7 +31,7 @@ jobs:
       - name: Build image
         run: docker buildx build -t ${{ github.event.repository.name }} --file ./Dockerfile . --platform linux/amd64 --load # Ticket 133 to enable multi-architecture builds (linux/arm64)
       - name: Test image
-        run: echo "git clone https://github.com/launchbynttdata/tf-azurerm-module_primitive-resource_group.git; cd tf-azurerm-module_primitive-resource_group; make configure" | docker run ${{ github.event.repository.name }} /usr/bin/bash; cd -; rm -rf tf-azurerm-module_primitive-resource_group
+        run: echo "git clone https://github.com/launchbynttdata/tf-azurerm-module_primitive-resource_group.git; cd tf-azurerm-module_primitive-resource_group; make configure" | docker run ${{ github.event.repository.name }} /usr/bin/bash; cd ..; rm -rf tf-azurerm-module_primitive-resource_group
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push linux/amd64 image
