@@ -29,33 +29,10 @@ jobs:
       - name: Push linux/amd64 image
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
-          export IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]') # This changes all uppercase characters to lowercase.
-          export VERSION=$(echo "${{ github.ref }}" | sed -e 's,refs/[head|tag]*s/,,g' | sed -e 's,/,-,g' | sed -e 's/!/-breaking/g' ) # This strips the git ref prefix from the version and replaces any remaining / characters with a -.
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]') # This changes all uppercase characters to lowercase.
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,refs/[head|tag]*s/,,g' | sed -e 's,/,-,g' | sed -e 's/!/-breaking/g' ) # This strips the git ref prefix from the version and replaces any remaining / characters with a -.
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//') # This strips the "v" prefix from the tag name.
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           docker tag ${{ github.event.repository.name }} $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-      - name: Clean for next platform build
-        run: docker system prune -f
-      - name: Build linux/arm64 image
-        run: docker buildx build -t ${{ github.event.repository.name }} --file ./Dockerfile . --platform linux/arm64 --load # Ticket 133 to enable multi-architecture builds (linux/arm64)
-      - name: Test image
-        run: echo "git clone https://github.com/launchbynttdata/tf-azurerm-module_primitive-resource_group.git; cd tf-azurerm-module_primitive-resource_group; make configure" | docker run ${{ github.event.repository.name }} /usr/bin/bash
-      - name: Log in to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Push linux/arm64 image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
-          export IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]') # This changes all uppercase characters to lowercase.
-          export VERSION=$(echo "${{ github.ref }}" | sed -e 's,refs/[head|tag]*s/,,g' | sed -e 's,/,-,g' | sed -e 's/!/-breaking/g' ) # This strips the git ref prefix from the version and replaces any remaining / characters with a -.
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//') # This strips the "v" prefix from the tag name.
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag ${{ github.event.repository.name }} $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
-      - name: Cleanup Untagged
-        uses: dylanratcliffe/delete-untagged-containers@v1.2.3
-        with:
-          package_name: ${{ github.event.repository.name }}
-          token: ${{ secrets.GITHUB_TOKEN }}
