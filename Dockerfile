@@ -46,10 +46,7 @@ FROM core AS tools
 
 RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
     && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
-    # && pip install --no-cache-dir --break-system-packages "launch-cli"
-    && git clone https://github.com/launchbynttdata/launch-cli.git --branch "patch/reworking-git-token" --single-branch \
-    && cd launch-cli \
-    && python -m pip install -e '.[dev]' --break-system-packages
+    && pip install --no-cache-dir --break-system-packages "launch-cli"
 
 FROM tools AS lcaf
 
