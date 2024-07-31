@@ -16,13 +16,12 @@ ENV TOOLS_DIR="/home/launch/tools"
 COPY ./scripts/install-docker.sh ${TOOLS_DIR}/launch-build-agent/install-docker.sh
 COPY ./scripts/install-chrome-${TARGETARCH}.sh ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh
 
-# Install Docker AWS CLI, Chrome, and set up the launch user
+# Install Docker, Chrome, and set up the launch user
 RUN ${TOOLS_DIR}/launch-build-agent/install-docker.sh \
-    && ${TOOLS_DIR}/launch-build-agent/install-awscliv2-${TARGETARCH}.sh \
     && ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh \
     && apt-get autoremove -y \
     && apt-get purge -y --auto-remove \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* awscliv2.zip ./aws \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && mkdir -p /home/launch \
     && curl https://storage.googleapis.com/git-repo-downloads/repo -o /home/launch/repo \
     && chmod a+rx /home/launch/repo \
