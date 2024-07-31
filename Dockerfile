@@ -22,7 +22,7 @@ RUN ${TOOLS_DIR}/launch-build-agent/install-docker.sh \
     && ${TOOLS_DIR}/launch-build-agent/install-chrome-${TARGETARCH}.sh \
     && apt-get autoremove -y \
     && apt-get purge -y --auto-remove \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* awscliv2.zip ./aws \
     && mkdir -p /home/launch \
     && curl https://storage.googleapis.com/git-repo-downloads/repo -o /home/launch/repo \
     && chmod a+rx /home/launch/repo \
