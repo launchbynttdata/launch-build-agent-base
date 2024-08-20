@@ -43,8 +43,12 @@ RUN mkdir -p ~/.ssh \
 FROM core AS tools
 
 RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
-    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel \
-    && pip install --no-cache-dir --break-system-packages "launch-cli"
+    && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel
+    # && pip install --no-cache-dir --break-system-packages "launch-cli"
+
+RUN git clone --branch bug/pipeline-multi https://github.com/launchbynttdata/launch-cli.git ~ \
+    && cd ~/launch-cli \
+    && pip install -e '.[dev]' --break-system-packages .
 
 FROM tools AS lcaf
 
