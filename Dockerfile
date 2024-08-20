@@ -47,7 +47,7 @@ RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
 
 RUN git clone https://github.com/launchbynttdata/launch-cli.git \
     && cd ./launch-cli && git checkout bug/pipeline-multi \
-    && pip install -e '.[dev]' --break-system-packages .
+    && python -m pip install -e '.[dev]' --break-system-packages .
 
 FROM tools AS lcaf
 
