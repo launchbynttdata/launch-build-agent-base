@@ -46,7 +46,7 @@ RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
     && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel
 
 RUN git clone https://github.com/launchbynttdata/launch-cli.git
-RUN cd launch-cli && git checkout bug/pipeline-multi
+RUN cd launch-cli/launch-cli && git checkout bug/pipeline-multi
 RUN ls -al && python -m pip install -e '.[dev]' --break-system-packages .
 
 FROM tools AS lcaf
