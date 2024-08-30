@@ -46,11 +46,11 @@ RUN pip install --no-cache-dir --upgrade --break-system-packages pip \
     && pip install --no-cache-dir --break-system-packages --upgrade PyYAML setuptools wheel
 
 # Comment to test with a branch of launch-cli
-# RUN pip install --no-cache-dir --break-system-packages "launch-cli"
+RUN pip install --no-cache-dir --break-system-packages "launch-cli"
 
 # Uncomment to test with a branch of launch-cli
-RUN git clone --branch bug/pipeline-multi https://github.com/launchbynttdata/launch-cli.git ~/launch-cli
-RUN pip install ~/launch-cli --break-system-packages
+# RUN git clone --branch bug/pipeline-multi https://github.com/launchbynttdata/launch-cli.git ~/launch-cli
+# RUN pip install ~/launch-cli --break-system-packages
 
 FROM tools AS lcaf
 
