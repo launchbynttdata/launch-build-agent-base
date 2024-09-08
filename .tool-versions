@@ -17,4 +17,5 @@ terraform 1.5.5
 terraform-docs 0.16.0
 terragrunt 0.39.2
 terragrunt 0.51.6
+terragrunt 0.54.11
 tflint 0.51.2
